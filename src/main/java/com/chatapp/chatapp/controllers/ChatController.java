@@ -8,23 +8,6 @@ import org.springframework.stereotype.Controller;
 
 @Controller
 public class ChatController {
-
-    public class Response {
-        private String message;
-        public Response(String message)
-        {
-            this.message = message;
-        }
-
-        public String getMessage() {
-            return message;
-        }
-
-        public void setMessage(String message) {
-            this.message = message;
-        }
-    }
-
     @MessageMapping("/chat")
     @SendTo("/topic/chat")
     public Message hello(Message message) throws Exception {
