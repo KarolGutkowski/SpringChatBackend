@@ -2,6 +2,25 @@ version: '3.8'
 services:
   api:
     image: chat_app/backend
+    depends_on:
+      database:
+        condition: service_started
     ports:
       - "8080:8080"
       - "5005:5005" # debug port
+    env_file:
+      - .env
+    environment:
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://${DB_CONTAINER_NAME}:5432/${POSTGRES_DB}"
+      SPRING_DATASOURCE_USERNAME: "${POSTGRES_USERNAME}"
+      SPRING_DATASOURCE_PASSWORD: "${POSTGRES_PASSWORD}"
+      SPRING_JPA_HIBERNATE_DDL_AUTO: "update"
+      JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005" # for remote debugging of docker container in IDE
+  database:
+    image: postgres:16.3-alpine
+    container_name: ${DB_CONTAINER_NAME}
+    restart: always
+    ports:
+      - '55432:5432'
+    env_file:
+      - '.env'
